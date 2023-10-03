@@ -90,6 +90,7 @@ def main():
             if key_lst[key]:
                 dx += vx_key
                 dy += vy_key
+    
         kk_rect.move_ip(dx, dy)
         inside_x, inside_y = is_inside_screen(kk_rect)
         if not inside_x:
