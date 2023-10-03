@@ -2,10 +2,18 @@ import sys
 import pygame as pg
 import random
 import time
+import math
 
 WIDTH, HEIGHT = 1600, 900
 BOMB_RADIUS = 10
 BOMB_COLOR = (255, 0, 0)  # 赤色
+
+def calc_ori(org: pg.Rect, dst: pg.Rect, current_xy: tuple[float, float]) -> tuple[float,float]:
+    x_diff,y_diff=dst.centerx-org.centerx, dst.centery-org.centery
+    norm=math.sqrt(x_diff**2+y_diff**2)
+    if norm < 500:
+        return current_xy
+    return x_diff/norm*math.sqrt(50),y_diff/norm*math.sqrt(50)
 
 
 def is_inside_screen(rect):
@@ -69,11 +77,13 @@ def main():
     # 爆弾の速度を設定
     vx, vy= 5, 5
 
+    vx,vy=calc_ori(bomb_rect,kk_rect,(vx,vy))
+
     while True:
         for event in pg.event.get():
             if event.type == pg.QUIT: 
                 return
-
+        # こうかとんの移動処理
         key_lst = pg.key.get_pressed()
         dx, dy = 0, 0
         for key, (vx_key, vy_key) in KEY_MOVEMENTS.items():
@@ -87,14 +97,18 @@ def main():
         if not inside_y:
             kk_rect.move_ip(0, -dy)
 
-        # 爆弾の移動
-        avx, avy = vx * accs[min(tmr // 500, 9)], vy * accs[min(tmr // 500, 9)]
+        
+
+       
+       
+
+
         bomb_rect.move_ip(avx, avy)
         inside_x, inside_y = is_inside_screen(bomb_rect)
         if not inside_x:
-            vx = -vx  # 速度の符号を反転
+            avx = -avx  # 速度の符号を反転
         if not inside_y:
-            vy = -vy  # 速度の符号を反転
+            avy = -avy  # 速度の符号を反転
 
         # 爆弾の大きさを変更
         bomb_rect.size = bomb_rects[min(tmr // 500, 9)].size
