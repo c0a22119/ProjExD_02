@@ -14,6 +14,9 @@ KEY_MOVEMENTS = {
     pg.K_RIGHT: (5, 0)
 }
 
+def is_inside_screen(rect):
+    return (0 <= rect.left and rect.right <= WIDTH, 0 <= rect.top and rect.bottom <= HEIGHT)
+
 def main():
     pg.display.set_caption("逃げろ！こうかとん")
     screen = pg.display.set_mode((WIDTH, HEIGHT))
@@ -45,8 +48,21 @@ def main():
                 dx += vx
                 dy += vy
         kk_rect.move_ip(dx, dy)
+        inside_x, inside_y = is_inside_screen(kk_rect)
+        if not inside_x:
+            kk_rect.move_ip(-dx, 0)
+        if not inside_y:
+            kk_rect.move_ip(0, -dy)
 
-        bomb_rect.move_ip(vx, vy)  # 爆弾の位置を移動
+        # 爆弾の移動
+        bomb_rect.move_ip(vx, vy)
+        inside_x, inside_y = is_inside_screen(bomb_rect)
+        if not inside_x:
+            vx = -vx
+            bomb_rect.move_ip(2*vx, 0) 
+        if not inside_y:
+            vy = -vy
+            bomb_rect.move_ip(0, 2*vy)
 
         screen.blit(bg_img, [0, 0])
         screen.blit(kk_img, kk_rect.topleft)
