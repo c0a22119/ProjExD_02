@@ -5,6 +5,8 @@ import random
 WIDTH, HEIGHT = 1600, 900
 BOMB_RADIUS = 10
 BOMB_COLOR = (255, 0, 0)  # 赤色
+vx = 5
+vy = 5
 
 def main():
     pg.display.set_caption("逃げろ！こうかとん")
@@ -29,12 +31,14 @@ def main():
             if event.type == pg.QUIT: 
                 return
 
+        bomb_rect.move_ip(vx, vy)  # 爆弾の位置を移動
+
         screen.blit(bg_img, [0, 0])
         screen.blit(kk_img, [900, 400])
         screen.blit(bomb_surface, bomb_rect.topleft)  # 爆弾の表示
         pg.display.update()
         tmr += 1
-        clock.tick(10)
+        clock.tick(50)  # FPSを50に変更
 
 if __name__ == "__main__":
     pg.init()
