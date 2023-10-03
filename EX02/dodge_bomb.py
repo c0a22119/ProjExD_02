@@ -1,6 +1,7 @@
 import sys
 import pygame as pg
 import random
+import time
 
 WIDTH, HEIGHT = 1600, 900
 BOMB_RADIUS = 10
@@ -15,6 +16,12 @@ def main():
     screen = pg.display.set_mode((WIDTH, HEIGHT))
     bg_img = pg.image.load("ex02/fig/pg_bg.jpg")
     kk_img = pg.image.load("ex02/fig/3.png")
+    
+    kkn_img = pg.image.load("ex02/fig/8.png")
+    kkn_img = pg.transform.rotozoom(kkn_img, 0, 5.0)
+    kkn_rct= kkn_img.get_rect()
+    kkn_rct.center=800,450
+
     kk_img = pg.transform.rotozoom(kk_img, 0, 2.0)
     kk_rect = kk_img.get_rect(topleft=(900, 400))
     clock = pg.time.Clock()
@@ -28,10 +35,10 @@ def main():
     }
     # 各方向に対するこうかとんの画像を作成
     kk_images = {
-    (0, -5): pg.transform.flip(pg.transform.rotozoom(kk_img, 90, 1.0), True,True ),  # 下向き
-    (0, 5): pg.transform.rotozoom(kk_img, 45, 1.0),   # 上向き
-    (-5, 0): pg.transform.rotozoom(kk_img, 0, 1.0),  # 右向き
-    (5, 0): pg.transform.flip(pg.transform.rotozoom(kk_img, 0, 1.0), True, False),  # 左向き
+    (0, -5): pg.transform.flip(pg.transform.rotozoom(kk_img, 90, 1.0), True,True ),  # 上向き
+    (0, 5): pg.transform.rotozoom(kk_img, 90, 1.0),   # 下向き
+    (-5, 0): pg.transform.rotozoom(kk_img, 0, 1.0),  # 左向き
+    (5, 0): pg.transform.flip(pg.transform.rotozoom(kk_img, 0, 1.0), True, False),  # 右向き
     (-5, -5): pg.transform.rotozoom(kk_img, -45, 1.0),  # 右下斜め
     (5, -5): pg.transform.flip(pg.transform.rotozoom(kk_img, -45, 1.0), True, False), # 左下斜め
     (-5, 5): pg.transform.rotozoom(kk_img, 45, 1.0), # 右上斜め
@@ -95,6 +102,10 @@ def main():
 
         # こうかとんと爆弾が衝突したかどうかを判定
         if kk_rect.colliderect(bomb_rect):
+            screen.blit(kkn_img,kkn_rct)
+            pg.display.update()
+            time.sleep(5)
+            
             return # 衝突した場合、main関数からreturnする
 
         screen.blit(bg_img, [0, 0])
