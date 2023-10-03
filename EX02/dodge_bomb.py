@@ -47,9 +47,20 @@ def main():
     bomb_rect = bomb_surface.get_rect()
     bomb_rect.topleft = (random.randint(0, WIDTH - 20), random.randint(0, HEIGHT - 20))
 
+    # 加速度のリストを作成
+    accs = [a for a in range(1, 11)]
+
+    # 拡大爆弾Surfaceのリストを作成
+    bb_imgs = []
+    bomb_rects = []
+    for r in range(1, 11):
+        bb_img = pg.Surface((20*r, 20*r), pg.SRCALPHA)
+        pg.draw.circle(bb_img, (255, 0, 0), (10*r, 10*r), 10*r)
+        bb_imgs.append(bb_img)
+        bomb_rects.append(bb_img.get_rect())
+    
     # 爆弾の速度を設定
-    vx = 5
-    vy = 5
+    vx, vy= 5, 5
 
     while True:
         for event in pg.event.get():
@@ -70,16 +81,21 @@ def main():
             kk_rect.move_ip(0, -dy)
 
         # 爆弾の移動
-        bomb_rect.move_ip(vx, vy)
+        avx, avy = vx * accs[min(tmr // 500, 9)], vy * accs[min(tmr // 500, 9)]
+        bomb_rect.move_ip(avx, avy)
         inside_x, inside_y = is_inside_screen(bomb_rect)
         if not inside_x:
             vx = -vx  # 速度の符号を反転
         if not inside_y:
             vy = -vy  # 速度の符号を反転
 
+        # 爆弾の大きさを変更
+        bomb_rect.size = bomb_rects[min(tmr // 500, 9)].size
+        bomb_surface = bb_imgs[min(tmr // 500, 9)]  # 爆弾のサイズを更新
+
         # こうかとんと爆弾が衝突したかどうかを判定
         if kk_rect.colliderect(bomb_rect):
-            return  # 衝突した場合、main関数からreturnする
+            return # 衝突した場合、main関数からreturnする
 
         screen.blit(bg_img, [0, 0])
         # 押下されたキーに応じて、適切な画像を選択して表示
