@@ -97,12 +97,7 @@ def main():
         if not inside_y:
             kk_rect.move_ip(0, -dy)
 
-        
-
-       
-       
-
-
+        #爆弾の反射
         bomb_rect.move_ip(avx, avy)
         inside_x, inside_y = is_inside_screen(bomb_rect)
         if not inside_x:
